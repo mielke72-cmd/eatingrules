@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f1720">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Fuel Plan">
+<title>Fuel Plan — Cut + Burj2Burj</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<style>
+  :root{
+    --bg:#0f1720; --card:#17212c; --card2:#1d2936; --line:#2a3846;
+    --text:#e8eef4; --muted:#93a4b5; --accent:#3fb6a8;
+    --cut:#3fb6a8; --str:#e0a84a; --fuel:#5b9bf0; --long:#c779e0;
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--text);
+    font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-text-size-adjust:100%}
+  header{padding:calc(env(safe-area-inset-top) + 14px) 16px 8px}
+  header h1{margin:0;font-size:20px;letter-spacing:.2px}
+  header p{margin:2px 0 0;color:var(--muted);font-size:13px}
+  main{padding:8px 16px calc(env(safe-area-inset-bottom) + 84px);max-width:720px;margin:0 auto}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 14px 12px;margin:12px 0}
+  .card h2{margin:0 0 8px;font-size:16px}
+  .card h3{margin:12px 0 4px;font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
+  .muted{color:var(--muted);font-size:14px}
+  ul{margin:4px 0;padding-left:20px} li{margin:3px 0}
+  .seg{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:6px 0 4px}
+  .seg button{appearance:none;border:1px solid var(--line);background:var(--card2);color:var(--text);
+    border-radius:12px;padding:12px 8px;font-family:inherit;font-weight:600;font-size:15px;line-height:1.2;text-align:left}
+  .seg button small{display:block;font-weight:400;color:var(--muted);font-size:12px;margin-top:3px}
+  .seg button[aria-pressed="true"]{border-color:var(--c);box-shadow:inset 0 0 0 1px var(--c);background:color-mix(in srgb,var(--c) 14%,var(--card2))}
+  .tag{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px;background:color-mix(in srgb,var(--c) 22%,transparent);color:var(--c)}
+  .meal{background:var(--card2);border-radius:12px;padding:10px 12px;margin:8px 0}
+  .meal b{display:block;margin-bottom:4px}
+  .portions{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .p{font-size:13px;padding:4px 9px;border-radius:999px;background:#0f1720;border:1px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+  .stat{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+  .stat div{background:var(--card2);border-radius:12px;padding:10px 12px}
+  .stat .v{font-size:22px;font-weight:700}
+  .stat .l{font-size:12px;color:var(--muted)}
+  label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px}
+  input[type=range]{width:100%;accent-color:var(--long)}
+  .out{font-size:15px}
+  .out .big{font-size:24px;font-weight:700;color:var(--long)}
+  nav{position:fixed;left:0;right:0;bottom:0;background:rgba(15,23,32,.96);backdrop-filter:blur(8px);
+    border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);
+    padding:6px 6px calc(env(safe-area-inset-bottom) + 6px)}
+  nav button{appearance:none;border:0;background:none;color:var(--muted);font-family:inherit;font-weight:600;font-size:12px;padding:8px 2px;border-radius:10px}
+  nav button span{display:block;font-size:19px;margin-bottom:2px}
+  nav button[aria-selected="true"]{color:var(--accent);background:var(--card)}
+  section[hidden]{display:none}
+  .note{border-left:3px solid var(--accent);padding:6px 10px;background:var(--card2);border-radius:8px;font-size:14px;margin:8px 0}
+  @media (prefers-color-scheme: light){
+    :root{--bg:#f4f6f8;--card:#fff;--card2:#f0f3f6;--line:#dde3ea;--text:#16202a;--muted:#5d6b79}
+    nav{background:rgba(255,255,255,.96)} .p{background:#fff}
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Fuel Plan</h1>
+  <p>Cut + Burj2Burj half-marathon · race day 24 Jan 2027</p>
+</header>
+
+<main>
+  <!-- TODAY -->
+  <section id="tab-today">
+    <div class="card">
+      <h2>What kind of day is today?</h2>
+      <div class="seg" id="daySeg"></div>
+    </div>
+    <div id="dayDetail"></div>
+  </section>
+
+  <!-- LONG RUN -->
+  <section id="tab-run" hidden>
+    <div class="card">
+      <h2>Long-run fuel calculator</h2>
+      <label for="dur">Planned duration: <b id="durLabel">90 min</b></label>
+      <input id="dur" type="range" min="45" max="180" step="5" value="90">
+      <div class="out" id="runOut"></div>
+    </div>
+    <div class="card">
+      <h2>Rules</h2>
+      <ul>
+        <li>30–60 g carbs per hour on runs over ~75 min. Never fasted.</li>
+        <li>1 gel ≈ 22–25 g carbs. First at 30–40 min, then every 30–40 min.</li>
+        <li>Take each gel with water. Stomach struggling? Swap one gel for 2–3 Medjool dates.</li>
+        <li>Practise race-day fuelling on long runs: same gel, same timing, same bottle mix.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- HYDRATION -->
+  <section id="tab-hydro" hidden>
+    <div class="card">
+      <h2>Electrolytes and hydration</h2>
+      <p class="muted">Runs at 26–29 °C. Electrolytes before and after every run, and during any run over ~60 min.</p>
+      <table>
+        <tr><th>When</th><th>What</th></tr>
+        <tr><td>30–60 min before</td><td>300–500 ml water + electrolytes. Sugar-free mix doesn't break the fast.</td></tr>
+        <tr><td>During runs &gt; ~60 min</td><td>400–700 ml per hour with electrolytes. Each gel with water.</td></tr>
+        <tr><td>After</td><td>Electrolytes in the first drink, then drink until urine is pale. Long runs: ~1.5 L per kg lost (weigh before and after).</td></tr>
+      </table>
+      <div class="note">White salt marks on kit or cap = salty sweater → stronger mix, ~500–1,000 mg sodium per litre.</div>
+    </div>
+    <div class="card">
+      <h2>Sweat-loss check</h2>
+      <label for="wPre">Weight before (kg)</label>
+      <input id="wPre" type="number" step="0.1" inputmode="decimal" placeholder="e.g. 76.5" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--card2);color:var(--text);font-size:16px;margin-bottom:10px">
+      <label for="wPost">Weight after (kg)</label>
+      <input id="wPost" type="number" step="0.1" inputmode="decimal" placeholder="e.g. 75.4" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--card2);color:var(--text);font-size:16px">
+      <p class="out" id="sweatOut"></p>
+    </div>
+  </section>
+
+  <!-- PLAN -->
+  <section id="tab-plan" hidden>
+    <div class="card">
+      <h2>Where I am (21 Nov 2026)</h2>
+      <div class="stat">
+        <div><div class="v">90.7 cm</div><div class="l">Waist (navel) · target 85–86</div></div>
+        <div><div class="v">76.5 kg</div><div class="l">7-day avg · target ~72–73</div></div>
+      </div>
+      <p class="muted" style="margin-top:10px">12 weeks at maintenance, not a cut. Weekdays fine — Saturdays and the number of maintenance days leak the deficit.</p>
+      <div class="note">Strategy: modest cut until ~10 Jan, then maintenance through the race. Realistic by race day: 88–89 cm. Finish to 85–86 cm after.</div>
+    </div>
+    <div class="card">
+      <h2>Fixed every day</h2>
+      <ul>
+        <li>Protein ≥ 120 g, ideally 130 g, split across Bridge and dinner</li>
+        <li>Saturday dinner out: protein + vegetables only — no bread, dessert or starchy side</li>
+        <li>Electrolytes on run and golf days</li>
+      </ul>
+      <h3>Hand portions</h3>
+      <ul>
+        <li><b>Palm</b> protein ≈ 100–120 g cooked meat/fish ≈ 25–30 g protein</li>
+        <li><b>Fist</b> vegetables ≈ 1 cup</li>
+        <li><b>Cupped hand</b> carbs ≈ ½ cup cooked rice/pasta ≈ 25 g carbs</li>
+        <li><b>Thumb</b> fat ≈ 1 tbsp oil or a small handful of nuts</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>Race build-up</h2>
+      <table>
+        <tr><th>When</th><th>What</th></tr>
+        <tr><td>From ~10 Jan</td><td>Maintenance every day — no deficit</td></tr>
+        <tr><td>Race −2 days</td><td>Carbs up, fibre and fat down</td></tr>
+        <tr><td>After the race</td><td>Back to the cut until waist 85–86 cm</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h2>Checkpoints</h2>
+      <ul>
+        <li><b>Waist:</b> every second Tuesday, fasted, at the navel, relaxed exhale, snug tape. Reference 90.7 cm.</li>
+        <li><b>Weight:</b> 7-day average only; ignore single readings.</li>
+        <li><b>Mid-December test:</b> waist not below 90 cm → deficit still leaking. Tighten portions and weekends first, not training volume.</li>
+        <li><b>Stop signal:</b> waist ≤ 86 cm on two consecutive fortnightly reads → maintenance.</li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<nav role="tablist">
+  <button role="tab" data-tab="today" aria-selected="true"><span>🍽️</span>Today</button>
+  <button role="tab" data-tab="run"><span>🏃</span>Long run</button>
+  <button role="tab" data-tab="hydro"><span>💧</span>Hydration</button>
+  <button role="tab" data-tab="plan"><span>📋</span>Plan</button>
+</nav>
+
+<script>
+const DAYS = {
+  cut: {
+    name:"Cut day", sub:"Rest · easy run · golf", c:"var(--cut)",
+    rule:"Bridge + low-carb, high-protein dinner. Golf: no carb add-on.",
+    meals:[
+      {t:"Bridge (35–45 g protein)", d:"3 eggs + 2 tbsp labneh + cucumber/tomato — or 200 g skyr + 1 scoop whey + a few berries.", p:[]},
+      {t:"Dinner", d:"e.g. ~250 g chicken, salmon or lean beef with salad or roast vegetables. No rice, bread or potato.",
+       p:["2–3 palms protein","2 fists veg","1 thumb fat","0 carbs"]}
+    ],
+    extra:["Electrolytes before and after an easy run or golf.","Saturday dinner out: protein + vegetables only."]
+  },
+  str: {
+    name:"Strength day", sub:"Cut day + small carbs", c:"var(--str)",
+    rule:"Post-training whey shake opens the window and counts as the Bridge. Small carb portion at dinner.",
+    meals:[
+      {t:"Post-training (counts as Bridge)", d:"Whey shake + 5 g creatine.", p:[]},
+      {t:"Dinner", d:"e.g. ~250 g chicken or lean beef, vegetables, a small portion of rice or potato.",
+       p:["2–3 palms protein","2 fists veg","1 cupped hand carbs","1 thumb fat"]}
+    ],
+    extra:["Still a cut day — count it toward the 4–5 per week."]
+  },
+  fuel: {
+    name:"Fuel day", sub:"Quality session", c:"var(--fuel)",
+    rule:"Maintenance. Carbs around the run. Moderate carbs at dinner the night before.",
+    meals:[
+      {t:"Straight after the run", d:"Whey shake + 1 banana, or 2 slices toast with honey.", p:[]},
+      {t:"Dinner", d:"e.g. chicken or fish with rice, pasta or potato and vegetables.",
+       p:["2 palms protein","1 fist veg","2 cupped hands carbs","1 thumb fat"]}
+    ],
+    extra:["Electrolytes before and after.","Use the same dinner the night before a long run."]
+  },
+  long: {
+    name:"Long run", sub:"Over ~75 min", c:"var(--long)",
+    rule:"Maintenance. Never fasted. 30–60 g carbs per hour during the run.",
+    meals:[
+      {t:"Before (if > 90 min)", d:"1 banana or 1 slice toast with honey + 300–500 ml water with electrolytes.", p:[]},
+      {t:"During", d:"1 gel (~25 g) every 30–40 min with water, or 2–3 Medjool dates per hour. Electrolytes in the bottle.", p:[]},
+      {t:"After", d:"Whey shake + banana or toast, electrolytes in the first drink.", p:[]},
+      {t:"Dinner", d:"Same as a fuel day.", p:["2 palms protein","1 fist veg","2 cupped hands carbs","1 thumb fat"]}
+    ],
+    extra:["Open the Long run tab to work out gels and fluid for today's distance."]
+  }
+};
+
+const store = {
+  get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
+  set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+};
+
+const seg = document.getElementById('daySeg');
+const detail = document.getElementById('dayDetail');
+
+function renderDay(key){
+  const d = DAYS[key];
+  seg.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed', b.dataset.k===key));
+  detail.innerHTML = `
+    <div class="card" style="--c:${d.c}">
+      <span class="tag">${d.name}</span>
+      <p style="margin:8px 0 4px">${d.rule}</p>
+      ${d.meals.map(m=>`
+        <div class="meal"><b>${m.t}</b>${m.d}
+          ${m.p.length?`<div class="portions">${m.p.map(x=>`<span class="p">${x}</span>`).join('')}</div>`:''}
+        </div>`).join('')}
+      <h3>Also</h3>
+      <ul>${d.extra.map(x=>`<li>${x}</li>`).join('')}<li>Protein ≥ 120 g today (ideally 130 g).</li></ul>
+    </div>`;
+  store.set('fp.day', key);
+}
+
+Object.entries(DAYS).forEach(([k,d])=>{
+  const b = document.createElement('button');
+  b.dataset.k = k; b.style.setProperty('--c', d.c);
+  b.innerHTML = `${d.name}<small>${d.sub}</small>`;
+  b.onclick = ()=>renderDay(k);
+  seg.appendChild(b);
+});
+renderDay(DAYS[store.get('fp.day')] ? store.get('fp.day') : 'cut');
+
+// Long-run calculator
+const dur = document.getElementById('dur');
+function renderRun(){
+  const m = +dur.value, h = m/60;
+  document.getElementById('durLabel').textContent = m + ' min';
+  const out = document.getElementById('runOut');
+  if (m < 75){
+    out.innerHTML = `<p><span class="big">No gels needed</span></p>
+      <p class="muted">Under ~75 min: electrolytes before and after${m>=60?', and sip during':''}. Fluid during: ${m>=60?Math.round(400*h)+'–'+Math.round(700*h)+' ml':'optional'}.</p>`;
+    return;
+  }
+  const times = []; for(let t=35; t<=m-10; t+=35) times.push(t);
+  const gels = times.length;
+  out.innerHTML = `
+    <p><span class="big">${gels} gel${gels>1?'s':''}</span> · ~${gels*25} g carbs (${Math.round(gels*25/h)} g/h)</p>
+    <p>Take at: <b>${times.map(t=>t+' min').join(' · ')}</b></p>
+    <p>Fluid during: <b>${Math.round(400*h)}–${Math.round(700*h)} ml</b> with electrolytes</p>
+    <p class="muted">Before: banana or toast + 300–500 ml with electrolytes${m>90?'':' (food optional under 90 min)'}.</p>`;
+}
+dur.oninput = renderRun; renderRun();
+
+// Sweat calculator
+const wPre = document.getElementById('wPre'), wPost = document.getElementById('wPost');
+function renderSweat(){
+  const a = parseFloat(wPre.value), b = parseFloat(wPost.value), o = document.getElementById('sweatOut');
+  if (isNaN(a) || isNaN(b)){ o.textContent=''; return; }
+  const loss = a - b;
+  if (loss <= 0){ o.innerHTML = `<span class="muted">No weight lost — you drank enough during the run.</span>`; return; }
+  o.innerHTML = `Lost <b>${loss.toFixed(1)} kg</b> → drink about <b>${(loss*1.5).toFixed(1)} L</b> over the next few hours, electrolytes in the first drink.`;
+}
+wPre.oninput = wPost.oninput = renderSweat;
+
+// Tabs
+document.querySelectorAll('nav button').forEach(b=>{
+  b.onclick = ()=>{
+    document.querySelectorAll('nav button').forEach(x=>x.setAttribute('aria-selected', x===b));
+    document.querySelectorAll('main > section').forEach(s=>s.hidden = s.id !== 'tab-'+b.dataset.tab);
+    window.scrollTo(0,0);
+  };
+});
+
+// Offline support
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+</script>
+</body>
+</html>
