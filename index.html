@@ -138,7 +138,7 @@
     <div class="card">
       <h2>Fixed every day</h2>
       <ul>
-        <li>Protein ≥ 120 g, ideally 130 g, split across Bridge and dinner</li>
+        <li>Two meals: lunch and dinner. Protein ≥ 120 g, ideally 130 g, split across both</li>
         <li>Saturday dinner out: protein + vegetables only — no bread, dessert or starchy side</li>
         <li>Electrolytes on run and golf days</li>
       </ul>
@@ -182,9 +182,9 @@
 const DAYS = {
   cut: {
     name:"Cut day", sub:"Rest · easy run · golf", c:"var(--cut)",
-    rule:"Bridge + low-carb, high-protein dinner. Golf: no carb add-on.",
+    rule:"Lunch + low-carb, high-protein dinner. Golf: no carb add-on.",
     meals:[
-      {t:"Bridge (35–45 g protein)", d:"3 eggs + 2 tbsp labneh + cucumber/tomato — or 200 g skyr + 1 scoop whey + a few berries.", p:[]},
+      {t:"Lunch, ~10:00–11:00 (35–45 g protein)", d:"3 eggs + 2 tbsp labneh + cucumber/tomato — or 200 g skyr + 1 scoop whey + a few berries — or ~150 g plain chicken or a tin of tuna with salad.", p:["1–1.5 palms protein","1 fist veg","0 carbs"]},
       {t:"Dinner", d:"e.g. ~250 g chicken, salmon or lean beef with salad or roast vegetables. No rice, bread or potato.",
        p:["2–3 palms protein","2 fists veg","1 thumb fat","0 carbs"]}
     ],
@@ -192,9 +192,10 @@ const DAYS = {
   },
   str: {
     name:"Strength day", sub:"Cut day + small carbs", c:"var(--str)",
-    rule:"Post-training whey shake opens the window and counts as the Bridge. Small carb portion at dinner.",
+    rule:"Post-training whey shake opens the window. Lunch ~13:00. Small carb portion at dinner.",
     meals:[
-      {t:"Post-training (counts as Bridge)", d:"Whey shake + 5 g creatine.", p:[]},
+      {t:"Post-training, ~09:00", d:"Whey shake + 5 g creatine.", p:[]},
+      {t:"Lunch, ~13:00 (35–45 g protein)", d:"3 eggs + 2 tbsp labneh + cucumber/tomato — or 200 g skyr + berries — or ~150 g plain chicken or a tin of tuna with salad.", p:["1–1.5 palms protein","1 fist veg"]},
       {t:"Dinner", d:"e.g. ~250 g chicken or lean beef, vegetables, a small portion of rice or potato.",
        p:["2–3 palms protein","2 fists veg","1 cupped hand carbs","1 thumb fat"]}
     ],
@@ -205,6 +206,7 @@ const DAYS = {
     rule:"Maintenance. Carbs around the run. Moderate carbs at dinner the night before.",
     meals:[
       {t:"Straight after the run", d:"Whey shake + 1 banana, or 2 slices toast with honey.", p:[]},
+      {t:"Lunch, ~13:00 (35–45 g protein)", d:"e.g. ~150 g chicken or tuna with rice or a wrap and salad — or skyr + whey + fruit + granola.", p:["1–1.5 palms protein","1 cupped hand carbs","1 fist veg"]},
       {t:"Dinner", d:"e.g. chicken or fish with rice, pasta or potato and vegetables.",
        p:["2 palms protein","1 fist veg","2 cupped hands carbs","1 thumb fat"]}
     ],
@@ -217,6 +219,7 @@ const DAYS = {
       {t:"Before (if > 90 min)", d:"1 banana or 1 slice toast with honey + 300–500 ml water with electrolytes.", p:[]},
       {t:"During", d:"1 gel (~25 g) every 30–40 min with water, or 2–3 Medjool dates per hour. Electrolytes in the bottle.", p:[]},
       {t:"After", d:"Whey shake + banana or toast, electrolytes in the first drink.", p:[]},
+      {t:"Lunch, ~13:00 (35–45 g protein)", d:"Same as a fuel day: protein + a cupped hand of carbs + veg.", p:["1–1.5 palms protein","1 cupped hand carbs","1 fist veg"]},
       {t:"Dinner", d:"Same as a fuel day.", p:["2 palms protein","1 fist veg","2 cupped hands carbs","1 thumb fat"]}
     ],
     extra:["Open the Long run tab to work out gels and fluid for today's distance."]

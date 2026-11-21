@@ -1,4 +1,4 @@
-const CACHE = 'fuel-plan-v1';
+const CACHE = 'fuel-plan-v3';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon.svg'];
 
 self.addEventListener('install', e => {
